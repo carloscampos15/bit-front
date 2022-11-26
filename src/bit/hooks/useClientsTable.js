@@ -8,7 +8,7 @@ import {
 } from "ka-table/actionCreators";
 import { kaReducer } from "ka-table";
 import { SortingMode, PagingPosition, ActionType } from "ka-table/enums";
-import { loadClients } from "../../store/clients/thunks";
+import { loadClients, deleteClient } from "../../store/clients/thunks";
 
 export const useClientsTable = () => {
   const dispatch = useDispatch();
@@ -21,7 +21,8 @@ export const useClientsTable = () => {
       { key: "address", title: "Dirección" },
       { key: "city", title: "Ciudad" },
       { key: "sector", title: "Sector" },
-      { key: "showClient", width: 80 },
+      { key: "showClient", width: 60 },
+      { key: "deleteClient", width: 60 },
     ],
     loading: {
       enabled: true,
@@ -59,5 +60,9 @@ export const useClientsTable = () => {
     }
   };
 
-  return { dispatchTable, tableProps };
+  const deleteResource = async (id) => {
+    await dispatch(deleteClient(id));
+  };
+
+  return { dispatchTable, tableProps, deleteResource };
 };

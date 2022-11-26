@@ -59,3 +59,33 @@ export const loadContact = (id) => {
     }
   };
 };
+
+export const deleteContact = (id) => {
+  return async (dispatch) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) return dispatch(startLogout());
+
+    try {
+      const { data } = await bitApi.delete(`/api/client-contacts/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return {
+        contact: true,
+        message: null,
+      };
+    } catch ({ response }) {
+      switch (response.status) {
+        case 400:
+        case 404:
+          return {
+            contact: null,
+            message: "El recurso al que deseas acceder no existe.",
+          };
+      }
+    }
+  };
+};

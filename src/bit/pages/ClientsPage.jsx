@@ -1,17 +1,28 @@
 import { BitLayout } from '../layout/BitLayout';
 import { useClientsTable } from '../hooks/useClientsTable';
-import { Eye } from 'react-bootstrap-icons';
+import { Eye, Trash } from 'react-bootstrap-icons';
 import { Table } from 'ka-table';
-import { search } from 'ka-table/actionCreators';
+import { search, deleteRow } from 'ka-table/actionCreators';
 import { NavLink } from 'react-router-dom';
 
 export const ClientsPage = () => {
-    const { dispatchTable, tableProps } = useClientsTable();
+    const { dispatchTable, tableProps, deleteResource } = useClientsTable();
 
     const Show = ({ rowData }) => {
         return (
             <NavLink to={`/clients/${rowData.resource_id}`} >
                 <Eye />
+            </NavLink>
+        )
+    }
+
+    const Delete = ({ dispatch, rowData }) => {
+        return (
+            <NavLink onClick={async () => {
+                await deleteResource(rowData.resource_id);
+                dispatch(deleteRow(rowData.id))
+            }} >
+                <Trash />
             </NavLink>
         )
     }
@@ -37,6 +48,9 @@ export const ClientsPage = () => {
                                         content: (props) => {
                                             if (props.column.key === 'showClient') {
                                                 return (<Show {...props} />)
+                                            }
+                                            if (props.column.key === 'deleteClient') {
+                                                return (<Delete {...props} />)
                                             }
                                         }
                                     },

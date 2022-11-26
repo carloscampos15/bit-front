@@ -20,7 +20,7 @@ export const loadClients = () => {
           name: client.name,
           nit: client.nit,
           email: client.email,
-          address: client.add,
+          address: client.address,
           city: client.city,
           sector: client.sector.name,
           resource_id: client.id,
@@ -49,6 +49,36 @@ export const loadClient = (id) => {
 
       return {
         client: data,
+        message: null,
+      };
+    } catch ({ response }) {
+      switch (response.status) {
+        case 400:
+        case 404:
+          return {
+            client: null,
+            message: "El recurso al que deseas acceder no existe.",
+          };
+      }
+    }
+  };
+};
+
+export const deleteClient = (id) => {
+  return async (dispatch) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) return dispatch(startLogout());
+
+    try {
+      const { data } = await bitApi.delete(`/api/clients/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return {
+        client: true,
         message: null,
       };
     } catch ({ response }) {

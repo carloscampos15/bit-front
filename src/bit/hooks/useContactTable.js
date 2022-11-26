@@ -8,7 +8,7 @@ import {
 } from "ka-table/actionCreators";
 import { kaReducer } from "ka-table";
 import { SortingMode, PagingPosition, ActionType } from "ka-table/enums";
-import { loadContacts } from "../../store/contacts/thunks";
+import { loadContacts, deleteContact } from "../../store/contacts/thunks";
 
 export const useContactsTable = () => {
   const dispatch = useDispatch();
@@ -17,7 +17,8 @@ export const useContactsTable = () => {
     columns: [
       { key: "name", title: "Nombre" },
       { key: "email", title: "Email" },
-      { key: "showContact", width: 80 },
+      { key: "showContact", width: 60 },
+      { key: "deleteContact", width: 60 },
     ],
     loading: {
       enabled: true,
@@ -55,5 +56,9 @@ export const useContactsTable = () => {
     }
   };
 
-  return { dispatchTable, tableProps };
+  const deleteResource = async (id) => {
+    await dispatch(deleteContact(id));
+  };
+
+  return { dispatchTable, tableProps, deleteResource };
 };

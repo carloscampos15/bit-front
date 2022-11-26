@@ -1,17 +1,28 @@
 import { BitLayout } from '../layout/BitLayout';
-import { Eye } from 'react-bootstrap-icons';
+import { Eye, Trash } from 'react-bootstrap-icons';
 import { Table } from 'ka-table';
-import { search } from 'ka-table/actionCreators';
+import { search, deleteRow } from 'ka-table/actionCreators';
 import { NavLink } from 'react-router-dom';
 import { useContactsTable } from '../hooks/useContactTable';
 
 export const ContactsPage = () => {
-    const { dispatchTable, tableProps } = useContactsTable();
+    const { dispatchTable, tableProps, deleteResource } = useContactsTable();
 
     const Show = ({ rowData }) => {
         return (
             <NavLink to={`/contacts/${rowData.resource_id}`} >
                 <Eye />
+            </NavLink>
+        )
+    }
+
+    const Delete = ({ dispatch, rowData }) => {
+        return (
+            <NavLink onClick={async () => {
+                await deleteResource(rowData.resource_id);
+                dispatch(deleteRow(rowData.id))
+            }} >
+                <Trash />
             </NavLink>
         )
     }
@@ -37,6 +48,9 @@ export const ContactsPage = () => {
                                         content: (props) => {
                                             if (props.column.key === 'showContact') {
                                                 return (<Show {...props} />)
+                                            }
+                                            if (props.column.key === 'deleteContact') {
+                                                return (<Delete {...props} />)
                                             }
                                         }
                                     },

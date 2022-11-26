@@ -1,17 +1,28 @@
 import { BitLayout } from '../layout/BitLayout';
 import { useSectorsTable } from '../hooks/useSectorsTable';
-import { Eye } from 'react-bootstrap-icons';
+import { Eye, Trash } from 'react-bootstrap-icons';
 import { Table } from 'ka-table';
-import { search } from 'ka-table/actionCreators';
+import { search, deleteRow } from 'ka-table/actionCreators';
 import { NavLink } from 'react-router-dom';
 
 export const SectorsPage = () => {
-    const { dispatchTable, tableProps } = useSectorsTable();
+    const { dispatchTable, tableProps, deleteResource } = useSectorsTable();
 
     const Show = ({ rowData }) => {
         return (
             <NavLink to={`/sectors/${rowData.resource_id}`} >
                 <Eye />
+            </NavLink>
+        )
+    }
+
+    const Delete = ({ dispatch, rowData }) => {
+        return (
+            <NavLink onClick={async () => {
+                await deleteResource(rowData.resource_id);
+                dispatch(deleteRow(rowData.id))
+            }} >
+                <Trash />
             </NavLink>
         )
     }
@@ -37,6 +48,9 @@ export const SectorsPage = () => {
                                         content: (props) => {
                                             if (props.column.key === 'showSector') {
                                                 return (<Show {...props} />)
+                                            }
+                                            if (props.column.key === 'deleteSector') {
+                                                return (<Delete {...props} />)
                                             }
                                         }
                                     },

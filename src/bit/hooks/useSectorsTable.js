@@ -9,6 +9,7 @@ import {
 import { kaReducer } from "ka-table";
 import { SortingMode, PagingPosition, ActionType } from "ka-table/enums";
 import { loadSectors } from "../../store/sectors/thunks";
+import { deleteSector } from "../../store/sectors/thunks";
 
 export const useSectorsTable = () => {
   const dispatch = useDispatch();
@@ -16,7 +17,8 @@ export const useSectorsTable = () => {
   const tablePropsInit = {
     columns: [
       { key: "name", title: "Nombre" },
-      { key: "showSector", width: 80 },
+      { key: "showSector", width: 60 },
+      { key: "deleteSector", width: 60 },
     ],
     loading: {
       enabled: true,
@@ -54,5 +56,9 @@ export const useSectorsTable = () => {
     }
   };
 
-  return { dispatchTable, tableProps };
+  const deleteResource = async (id) => {
+    await dispatch(deleteSector(id));
+  };
+
+  return { dispatchTable, tableProps, deleteResource };
 };

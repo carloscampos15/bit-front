@@ -58,3 +58,33 @@ export const loadSector = (id) => {
     }
   };
 };
+
+export const deleteSector = (id) => {
+  return async (dispatch) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) return dispatch(startLogout());
+
+    try {
+      const { data } = await bitApi.delete(`/api/sectors/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return {
+        sector: true,
+        message: null,
+      };
+    } catch ({ response }) {
+      switch (response.status) {
+        case 400:
+        case 404:
+          return {
+            sector: null,
+            message: "El recurso al que deseas acceder no existe.",
+          };
+      }
+    }
+  };
+};
