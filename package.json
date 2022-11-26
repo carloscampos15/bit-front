@@ -9,8 +9,23 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.9.0",
+    "axios": "^1.2.0",
+    "bootstrap": "^5.2.2",
+    "jquery": "^3.6.1",
+    "js-base64": "^3.7.3",
+    "ka-table": "^7.6.3",
+    "localforage": "^1.10.0",
+    "match-sorter": "^6.3.1",
+    "popper.js": "^1.16.1",
+    "query-string": "^7.1.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-bootstrap-icons": "^1.9.1",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.39.5",
+    "react-redux": "^8.0.5",
+    "react-router-dom": "^6.4.3",
+    "sort-by": "^1.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.24",
