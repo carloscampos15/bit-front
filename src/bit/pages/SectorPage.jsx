@@ -1,55 +1,44 @@
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom';
 import { BitLayout } from './../layout/BitLayout';
-import { useSectorsTable } from './../hooks/useSectorsTable';
-import { Eye } from 'react-bootstrap-icons';
-import { Table } from 'ka-table';
-import { search } from 'ka-table/actionCreators';
-import { NavLink } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { loadSector } from '../../store/sectors/thunks';
+import { Message } from './../components/sectors/Message';
+import { LoadingState } from './../../ui/components/LoadingState';
+import { InputRead } from '../components/layout/InputRead';
 
 export const SectorPage = () => {
-    const { dispatchTable, tableProps } = useSectorsTable();
+    const [sector, setSector] = useState();
+    const [message, setMessage] = useState();
+    const dispatch = useDispatch();
+    const { id } = useParams();
 
-    const Show = ({ rowData }) => {
-        return (
-            <NavLink to={`/sectors/${rowData.applicant_id}`} >
-                <Eye />
-            </NavLink>
-        )
+    useEffect(() => {
+        dispatchLoadData();
+    }, [])
+
+    const dispatchLoadData = async () => {
+        const { sector, message } = await dispatch(loadSector(id));
+        setSector(sector);
+        setMessage(message);
+    }
+
+    if (!sector && !message) {
+        return <LoadingState />;
     }
 
     return (
-        <BitLayout title='Sectores'>
-            <div className="row justify-content-end">
-                <div className="col-lg-4 col-md-6 col-sm-12">
-                    <input type='search' defaultValue={tableProps.searchText} onChange={({ currentTarget }) => {
-                        dispatchTable(search(currentTarget.value));
-                    }} className="form-control mb-3" placeholder='Buscar...' />
-                </div>
-            </div>
-            <div className="card">
-                <div className="row">
-                    <div className="col-12">
-                        <div className="table-responsive">
-                            <Table
-                                className="table"
-                                {...tableProps}
-                                childComponents={{
-                                    cellText: {
-                                        content: (props) => {
-                                            if (props.column.key === 'showSector') {
-                                                return (<Show {...props} />)
-                                            }
-                                        }
-                                    },
-                                    noDataRow: {
-                                        content: () => 'No se encontraron datos para mostrar'
-                                    }
-                                }}
-                                dispatch={dispatchTable}
-                            />
+        <BitLayout title='Sectores' subtitle='Ver sector' returnRoute='/sectors'>
+            {
+                (!sector && message) ? <Message message={message} /> :
+                    <div className="row">
+                        <div className="col-12">
+                            <div className="row g-3">
+                                <InputRead col={12} title="Nombre" value={sector.name} />
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+            }
         </BitLayout>
     )
 }

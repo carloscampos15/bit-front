@@ -1,55 +1,48 @@
+import React from 'react'
+import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { LoadingState } from './../../ui/components/LoadingState';
 import { BitLayout } from './../layout/BitLayout';
-import { useClientsTable } from './../hooks/useClientsTable';
-import { Eye } from 'react-bootstrap-icons';
-import { Table } from 'ka-table';
-import { search } from 'ka-table/actionCreators';
-import { NavLink } from 'react-router-dom';
+import { InputRead } from './../components/layout/InputRead';
+import { loadClient } from './../../store/clients/thunks';
 
 export const ClientPage = () => {
-    const { dispatchTable, tableProps } = useClientsTable();
+  const [client, setClient] = useState();
+  const [message, setMessage] = useState();
+  const dispatch = useDispatch();
+  const { id } = useParams();
 
-    const Show = ({ rowData }) => {
-        return (
-            <NavLink to={`/clients/${rowData.applicant_id}`} >
-                <Eye />
-            </NavLink>
-        )
-    }
+  useEffect(() => {
+    dispatchLoadData();
+  }, [])
 
-    return (
-        <BitLayout title='Clientes'>
-            <div className="row justify-content-end">
-                <div className="col-lg-4 col-md-6 col-sm-12">
-                    <input type='search' defaultValue={tableProps.searchText} onChange={({ currentTarget }) => {
-                        dispatchTable(search(currentTarget.value));
-                    }} className="form-control mb-3" placeholder='Buscar...' />
-                </div>
+  const dispatchLoadData = async () => {
+    const { client, message } = await dispatch(loadClient(id));
+    setClient(client);
+    setMessage(message);
+  }
+
+  if (!client && !message) {
+    return <LoadingState />;
+  }
+
+  return (
+    <BitLayout title='Clientes' subtitle='Ver cliente' returnRoute='/clients'>
+      {
+        (!client && message) ? <Message message={message} /> :
+          <div className="row">
+            <div className="col-12">
+              <div className="row g-3">
+                <InputRead col={12} title="Nombre" value={client.name} />
+                <InputRead col={12} title="Email" value={client.email} />
+                <InputRead col={12} title="Nit" value={client.nit} />
+                <InputRead col={12} title="Dirección" value={client.address} />
+                <InputRead col={12} title="Ciudad" value={client.city} />
+              </div>
             </div>
-            <div className="card">
-                <div className="row">
-                    <div className="col-12">
-                        <div className="table-responsive">
-                            <Table
-                                className="table"
-                                {...tableProps}
-                                childComponents={{
-                                    cellText: {
-                                        content: (props) => {
-                                            if (props.column.key === 'showClient') {
-                                                return (<Show {...props} />)
-                                            }
-                                        }
-                                    },
-                                    noDataRow: {
-                                        content: () => 'No se encontraron datos para mostrar'
-                                    }
-                                }}
-                                dispatch={dispatchTable}
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </BitLayout>
-    )
+          </div>
+      }
+    </BitLayout>
+  )
 }

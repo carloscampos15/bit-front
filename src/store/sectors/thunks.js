@@ -18,12 +18,43 @@ export const loadSectors = () => {
         return {
           id: index,
           name: sector.name,
+          resource_id: sector.id,
         };
       });
 
       return newArrData;
     } catch (error) {
       return [];
+    }
+  };
+};
+
+export const loadSector = (id) => {
+  return async (dispatch) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) return dispatch(startLogout());
+
+    try {
+      const { data } = await bitApi.get(`/api/sectors/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return {
+        sector: data,
+        message: null,
+      };
+    } catch ({ response }) {
+      switch (response.status) {
+        case 400:
+        case 404:
+          return {
+            sector: null,
+            message: "El recurso al que deseas acceder no existe.",
+          };
+      }
     }
   };
 };
