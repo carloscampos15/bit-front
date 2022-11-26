@@ -20,9 +20,9 @@ export const AppRouter = () => {
         <Routes>
             {
                 (status === 'not-authenticated')
-                    // login
+                    // Auth
                     ? <Route path="/auth/*" element={<AuthRoutes />} />
-                    // JournalApp
+                    // Bit
                     : <Route path="/*" element={<BitRoutes />} />
             }
             <Route path='/*' element={<Navigate to='/auth/login' />} />

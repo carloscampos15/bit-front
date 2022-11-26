@@ -15,17 +15,25 @@ export const SideBar = () => {
                 <li className="nav-item">
                     <NavLink
                         className={({ isActive }) => `nav-link ${!isActive ? 'collapsed' : ''}`}
-                        to="/applications"
+                        to="/sectors"
                     >
-                        <span>Solicitudes</span>
+                        <span>Sectores</span>
                     </NavLink>
                 </li>
                 <li className="nav-item">
                     <NavLink
                         className={({ isActive }) => `nav-link ${!isActive ? 'collapsed' : ''}`}
-                        to="/users"
+                        to="/clients"
                     >
-                        <span>Usuarios</span>
+                        <span>Clientes</span>
+                    </NavLink>
+                </li>
+                <li className="nav-item">
+                    <NavLink
+                        className={({ isActive }) => `nav-link ${!isActive ? 'collapsed' : ''}`}
+                        to="/contacts"
+                    >
+                        <span>Contactos</span>
                     </NavLink>
                 </li>
             </ul>
